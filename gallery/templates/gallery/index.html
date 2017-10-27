@@ -1,0 +1,54 @@
+{% load static %}
+{% load thumbnail %}
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Photo Gallery</title>
+        <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+        <script src="{% static '/gallery/Gallery-2.21.3/js/blueimp-gallery.js' %}"></script>
+        <link rel="stylesheet" href="{% static '/gallery/Gallery-2.21.3/css/blueimp-gallery.min.css' %}">
+        <link rel="stylesheet" href="{% static '/gallery/style.css' %}">
+    </head>
+
+<body>
+<!-- The Gallery as lightbox dialog, should be a child element of the document body -->
+    <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">
+        <div class="slides"></div>
+        <h3 class="title"></h3>
+        <a class="prev">‹</a>
+        <a class="next">›</a>
+        <a class="close">×</a>
+        <a class="play-pause"></a>
+        <ol class="indicator"></ol>
+    </div>
+    <div id="links">
+        {% if image_list %}
+            {% for image in image_list %}
+                <a href="{{ image.path }}" title="{{ image.name }}">
+                    <img src="{{ image.path | thumbnail_url:'200x200' }}" alt="{{ image.name }}">
+                </a>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <script>
+        document.getElementById('links').onclick = function (event) {
+            event = event || window.event;
+
+            var target = event.target || event.srcElement,
+                link = target.src ? target.parentNode : target,
+                options = {index: link, event: event},
+                links = this.getElementsByTagName('a');
+    
+            console.log(links)
+            console.log(options)
+            blueimp.Gallery(links, options);
+        };
+    </script>
+
+</body>
+
+</html>

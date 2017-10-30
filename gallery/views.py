@@ -67,7 +67,8 @@ def get_imgs(request):
     return response
  
 
-MODELS = ["test1", "test2", "test3", "test4", "test5", "test6", "test7", "test8", "test9"]
+#MODELS = ["test1", "test2", "test3", "test4", "test5", "test6", "test7", "test8", "test9"]
+MODELS = ["test6", "test7", "test8"]
 
 def status_check(path):
     file_pre = settings.BASE_DIR + "/gallery/" + path.split('.')[0]
@@ -113,11 +114,6 @@ def get_img_stylized(request):
     response["Access-Control-Allow-Headers"] = "*"
 
     return response
-
-    
-
-
-    return HttpResponse(json.dumps(res), content_type="application/json")
     
 
 def get_tags(request):
@@ -175,6 +171,10 @@ def upload_img(request):
             im = IP.objects.get(md5 = md5)
     
         img = IN.objects.create(name = reqfile, md5 = im, tags = tags, type = tp, create_time = create_time)
+
+
+        print img.id
+
         tags = [ t for t in tags.split(',') if t ]
         ITA.objects.filter(tag_id__in = tags).update(counter = F('counter') + 1)
 
@@ -184,7 +184,6 @@ def upload_img(request):
             #print time.strftime('%Y%m%d  %H:%M:%S',time.localtime(time.time()))
             cmd = "sh /home/hao.guo/projects/fast-neural-style/webscripts/webCall.sh %s %s"%(store_path, model_name)
             os.popen(cmd)  
-            #print time.strftime('%Y%m%d  %H:%M:%S',time.localtime(time.time()))
            
         '''
         t = IN.objects.get(name = reqfile)
@@ -216,7 +215,8 @@ def upload_check(request):
         get_md5 = IP.objects.get(md5 = md5)
         res = "saved"
         create_time = datetime.datetime.now()
-        IN.objects.create(name = name, md5 = get_md5, tags = tags, type=tp, create_time = create_time)
+        img = IN.objects.create(name = name, md5 = get_md5, tags = tags, type=tp, create_time = create_time)
+        print img.id
         tags = [ t for t in tags.split(',') if t ]
         ITA.objects.filter(tag_id__in = tags).update(counter = F('counter') + 1)
     except Exception as e:

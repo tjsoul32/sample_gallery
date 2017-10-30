@@ -97,12 +97,16 @@ def status_check(path):
 def get_img_stylized(request):    
     getData = request.GET
     img_id = getData["img_id"]
-    img = IN.objects.get(id = img_id)
 
-    getpath = IP.objects.get(md5 = img.md5.md5)
-    img_path = str(getpath.path)
+    try:
+        img = IN.objects.get(id = img_id)
+        getpath = IP.objects.get(md5 = img.md5.md5)
+        img_path = str(getpath.path)
+    except Exception as e:
+        print e
+        img_path = ''
+
     res = {}
-
     res["img_id"] = img_id
     res["img_path"] = img_path
     res["status"] = status_check(img_path)
@@ -188,13 +192,16 @@ def upload_img(request):
         '''    
         img_id = img.id
         status = 1
+        img_path = path
     except IOError:
         img_id = 0
         status = 0
+        img_path = ''
 
     res = {}
     res["img_id"] = img_id
     res["status"] = status
+    res["img_path"] = img_path
 
     response = HttpResponse(json.dumps(res), content_type="application/json")
     response["Access-Control-Allow-Origin"] = "*"
@@ -216,6 +223,7 @@ def upload_check(request):
     tp = 'a'
 
     exist = 0
+    img_path = ''
     try:
         get_md5 = IP.objects.get(md5 = md5)
         create_time = datetime.datetime.now()
@@ -225,6 +233,7 @@ def upload_check(request):
         
         img_id = img.id
         exist = 1
+        img_path = str(get_md5.path)
     except Exception as e:
         print e
         img_id = 0
@@ -232,6 +241,7 @@ def upload_check(request):
     res = {}
     res["img_id"] = img_id
     res["exist"] = exist
+    res["img_path"] = img_path
 
     response = HttpResponse(json.dumps(res), content_type="application/json")
     response["Access-Control-Allow-Origin"] = "*"

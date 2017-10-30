@@ -68,7 +68,7 @@ def get_imgs(request):
  
 
 #MODELS = ["test1", "test2", "test3", "test4", "test5", "test6", "test7", "test8", "test9"]
-MODELS = ["test6", "test7", "test8"]
+MODELS = ["test6", "test7"]
 
 def status_check(path):
     file_pre = settings.BASE_DIR + "/gallery/" + path.split('.')[0]
@@ -172,9 +172,6 @@ def upload_img(request):
     
         img = IN.objects.create(name = reqfile, md5 = im, tags = tags, type = tp, create_time = create_time)
 
-
-        print img.id
-
         tags = [ t for t in tags.split(',') if t ]
         ITA.objects.filter(tag_id__in = tags).update(counter = F('counter') + 1)
 
@@ -189,10 +186,17 @@ def upload_img(request):
         t = IN.objects.get(name = reqfile)
         print t.md5.path
         '''    
-        response = HttpResponse("OK ")
+        img_id = img.id
+        status = 1
     except IOError:
-        response = HttpResponse("Not Image ")
+        img_id = 0
+        status = 0
 
+    res = {}
+    res["img_id"] = img_id
+    res["status"] = status
+
+    response = HttpResponse(json.dumps(res), content_type="application/json")
     response["Access-Control-Allow-Origin"] = "*"
     response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
     response["Access-Control-Max-Age"] = "1000"
@@ -211,19 +215,25 @@ def upload_check(request):
     tags = ',1,'
     tp = 'a'
 
+    exist = 0
     try:
         get_md5 = IP.objects.get(md5 = md5)
-        res = "saved"
         create_time = datetime.datetime.now()
         img = IN.objects.create(name = name, md5 = get_md5, tags = tags, type=tp, create_time = create_time)
-        print img.id
         tags = [ t for t in tags.split(',') if t ]
         ITA.objects.filter(tag_id__in = tags).update(counter = F('counter') + 1)
-    except Exception as e:
-        #print e
-        res = "notfound"
         
-    response = HttpResponse(res)
+        img_id = img.id
+        exist = 1
+    except Exception as e:
+        print e
+        img_id = 0
+
+    res = {}
+    res["img_id"] = img_id
+    res["exist"] = exist
+
+    response = HttpResponse(json.dumps(res), content_type="application/json")
     response["Access-Control-Allow-Origin"] = "*"
     response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
     response["Access-Control-Max-Age"] = "1000"

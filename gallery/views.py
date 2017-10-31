@@ -22,6 +22,10 @@ import hashlib
 import json
 
 
+MODELS = ["test1", "test2", "test3", "test4", "test5", "test6", "test7", "test8", "test9"]
+#MODELS = ["test2", "test3"]
+
+
 @csrf_exempt
 def get_imgs(request):
     getData = request.GET.dict()
@@ -67,9 +71,6 @@ def get_imgs(request):
     return response
  
 
-#MODELS = ["test1", "test2", "test3", "test4", "test5", "test6", "test7", "test8", "test9"]
-MODELS = ["test6", "test7"]
-
 def status_check(path):
     file_pre = settings.BASE_DIR + "/gallery/" + path.split('.')[0]
      
@@ -90,6 +91,7 @@ def status_check(path):
           s = 9
       status[m] = s
 
+    #print status
     return status
 
 
@@ -148,7 +150,7 @@ def upload_img(request):
 
     try:
         img = Img.open(reqfile)
-    
+
         this_uuid = str(uuid.uuid1())
         img_name = this_uuid + "." + img.format
         img_name_200 = this_uuid + "_200." + img.format
@@ -201,6 +203,7 @@ def upload_img(request):
     res = {}
     res["img_id"] = img_id
     res["status"] = status
+
     res["img_path"] = img_path
 
     response = HttpResponse(json.dumps(res), content_type="application/json")

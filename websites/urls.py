@@ -27,3 +27,5 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.IMAGE_PREFIX, document_root=os.path.join(settings.MEDIA_ROOT, settings.IMAGE_PREFIX))
+
+

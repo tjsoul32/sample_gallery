@@ -185,7 +185,7 @@ def upload_img(request):
 
         for model_name in MODELS:
             #print time.strftime('%Y%m%d  %H:%M:%S',time.localtime(time.time()))
-            cmd = "sh /home/hao.guo/projects/fast-neural-style/webscripts/webCall.sh %s %s"%(store_path, model_name)
+            cmd = "sh /home/hao.guo/projects/fast-neural-style/webscripts/webCall.sh %s %s %s"%(store_path, model_name, img.size[0])
             os.popen(cmd)  
            
         '''

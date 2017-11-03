@@ -150,6 +150,7 @@ def upload_img(request):
 
     try:
         img = Img.open(reqfile)
+        width = img.size[0]
 
         this_uuid = str(uuid.uuid1())
         img_name = this_uuid + "." + img.format
@@ -185,7 +186,7 @@ def upload_img(request):
 
         for model_name in MODELS:
             #print time.strftime('%Y%m%d  %H:%M:%S',time.localtime(time.time()))
-            cmd = "sh /home/hao.guo/projects/fast-neural-style/webscripts/webCall.sh %s %s %s"%(store_path, model_name, img.size[0])
+            cmd = "sh /home/hao.guo/projects/fast-neural-style/webscripts/webCall.sh %s %s %s"%(store_path, model_name, width)
             os.popen(cmd)  
            
         '''
